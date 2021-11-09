@@ -1,8 +1,9 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import { keyConfig } from '../config/keys';
 
-const db = require('./config/keys').mongoURI;
+const db = keyConfig.mongoURI;
 
 const app = express();
 
