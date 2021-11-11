@@ -5,10 +5,28 @@ function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  async function registerUser(e) {
+    e.preventDefault();
+    const response = await fetch('http://localhost:5000/api/session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+      }),
+    });
+
+    const data = await response.json();
+    console.log(data);
+  }
+
   return (
     <div>
       <h1>Register</h1>
-      <form>
+      <form onSubmit={registerUser}>
         <input
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -19,13 +37,13 @@ function App() {
         <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          type='text'
+          type='email'
           placeholder='Email'
         />
         <br />
         <input
           value={password}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
           type='password'
           placeholder='Password'
         />
