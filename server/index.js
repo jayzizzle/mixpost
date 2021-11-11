@@ -3,6 +3,8 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 
+const User = require('./models/user');
+
 app.use(cors());
 app.use(express.json());
 
@@ -10,6 +12,7 @@ mongoose.connect('mongodb://localhost:27017/mixpost');
 
 app.post('/api/register', async (req, res) => {
   try {
+    console.log(req.body);
     const user = await User.create({
       username: req.body.username,
       email: req.body.email,
