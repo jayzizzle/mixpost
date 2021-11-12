@@ -2,17 +2,20 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
+const db = require('./config/keys').mongoURI;
 
 const User = require('./models/user');
 
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect('mongodb://localhost:27017/mixpost');
+mongoose
+  .connect(db)
+  .then(() => console.log('Connected to MongoDB successfully'))
+  .catch((error) => console.log(error));
 
 app.post('/api/register', async (req, res) => {
   try {
-    console.log(req.body);
     const user = await User.create({
       username: req.body.username,
       email: req.body.email,
