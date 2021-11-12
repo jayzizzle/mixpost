@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 const db = require('./config/keys').mongoURI;
+const jwt = require('jsonwebtoken');
 
 const User = require('./models/user');
 
@@ -34,7 +35,14 @@ app.post('/api/login', async (req, res) => {
   });
 
   if (user) {
-    return res.json({ status: 'ok', user: true });
+    const token = jwt.sign(
+      {
+        username: user.username,
+        email: user.email,
+      },
+      'secretOrKey' // must hide this later
+    );
+    return res.json({ status: 'ok', user: token });
   } else {
     return res.json({ status: 'error', user: false });
   }
