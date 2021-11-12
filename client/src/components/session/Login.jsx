@@ -18,6 +18,13 @@ function Login() {
     });
 
     const data = await response.json();
+
+    if (data.user) {
+      alert('Login Successful');
+      window.location.href = '/dashboard';
+    } else {
+      alert('Invalid Username/Password');
+    }
   }
 
   return (
