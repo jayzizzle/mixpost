@@ -49,5 +49,19 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+app.get('/api/quote', async (req, res) => {
+  const token = req.headers['x-access-token'];
+
+  try {
+    const decoded = jwt.verify(token, 'secretOrKey'); // must hide this later
+    const username = decoded.username;
+    const user = await User.findOne({ username: username });
+    return { status: 'ok', quote: user.quote };
+  } catch (error) {
+    console.log(error);
+    res.json({ status: 'error', error: 'Invalid Token' });
+  }
+});
+
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server is running on port ${port}`));
