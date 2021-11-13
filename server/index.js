@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const db = require('./config/keys').mongoURI;
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const User = require('./models/user');
 
@@ -18,10 +19,11 @@ mongoose
 
 app.post('/api/register', async (req, res) => {
   try {
-    const user = await User.create({
+    const newPassword = await bcrypt.hash(req.body.password, 10);
+    await User.create({
       username: req.body.username,
       email: req.body.email,
-      password: req.body.password,
+      password: newPassword,
     });
     res.json({ status: 'ok' });
   } catch (error) {
@@ -32,10 +34,18 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
   const user = await User.findOne({
     username: req.body.username,
-    password: req.body.password,
   });
 
-  if (user) {
+  if (!user) {
+    return { status: 'error', error: 'Invalid Credentials' };
+  }
+
+  const isPasswordValid = await bcrypt.compare(
+    req.body.password,
+    user.password
+  );
+
+  if (isPasswordValid) {
     const token = jwt.sign(
       {
         username: user.username,
@@ -73,9 +83,8 @@ app.post('/api/quote', async (req, res) => {
       { username: username },
       { $set: { quote: req.body.quote } }
     );
-    return { status: 'ok', quote: user.quote };
+    return res.json({ status: 'ok', quote: user.quote });
   } catch (error) {
-    console.log(error);
     res.json({ status: 'error', error: 'Invalid Token' });
   }
 });

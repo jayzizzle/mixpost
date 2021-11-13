@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -25,7 +25,7 @@ function Register() {
     const data = await response.json();
 
     if (data.status === 'ok') {
-      history.push('login');
+      navigate('login');
     }
   }
 

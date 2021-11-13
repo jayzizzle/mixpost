@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import jwt from 'jsonwebtoken';
 
 export const Dashboard = () => {
-  const history = useNavigate();
+  const navigate = useNavigate();
   const [quote, setQuote] = useState('');
   const [tempQuote, setTempQuote] = useState('');
 
@@ -28,14 +28,15 @@ export const Dashboard = () => {
       const user = jwt.decode(token);
       if (!user) {
         localStorage.removeItem('token');
-        history.replace('/login');
+        navigate('/login', { replace: true });
       } else {
         populateQuote();
       }
     }
   }, []);
 
-  async function updateQuote() {
+  async function updateQuote(e) {
+    e.preventDefault();
     const req = await fetch('/api/quote', {
       method: 'POST',
       headers: {
@@ -49,8 +50,8 @@ export const Dashboard = () => {
 
     const data = await req.json();
     if (data.status === 'ok') {
+      setQuote(tempQuote);
       setTempQuote('');
-      setQuote(data.quote);
     } else {
       alert(data.error);
     }
