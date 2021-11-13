@@ -56,6 +56,23 @@ app.get('/api/quote', async (req, res) => {
     const decoded = jwt.verify(token, 'secretOrKey'); // must hide this later
     const username = decoded.username;
     const user = await User.findOne({ username: username });
+    return res.json({ status: 'ok', quote: user.quote });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: 'error', error: 'Invalid Token' });
+  }
+});
+
+app.post('/api/quote', async (req, res) => {
+  const token = req.headers['x-access-token'];
+
+  try {
+    const decoded = jwt.verify(token, 'secretOrKey'); // must hide this later
+    const username = decoded.username;
+    const user = await User.updateOne(
+      { username: username },
+      { $set: { quote: req.body.quote } }
+    );
     return { status: 'ok', quote: user.quote };
   } catch (error) {
     console.log(error);
