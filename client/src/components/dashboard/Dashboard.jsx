@@ -1,16 +1,19 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { jwt } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 export const Dashboard = () => {
   const history = useNavigate();
 
   async function populateQuote() {
-    const data = await fetch('/api/quote', {
+    const req = await fetch('/api/quote', {
       headers: {
         'x-access-token': localStorage.getItem('token'),
       },
     });
+
+    const data = req.json();
+    console.log(data);
   }
 
   useEffect(() => {
